@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Testing & UI Automation Path</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            font-weight: 300;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 80px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: absolute;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide h1 {
+            font-size: 4rem;
+            font-weight: 200;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        
+        .slide h2 {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 50px;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+        
+        .slide h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #007AFF;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .slide p {
+            font-size: 1.8rem;
+            line-height: 1.5;
+            color: #B3B3B3;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        
+        .slide ul {
+            list-style: none;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        .slide li {
+            font-size: 1.6rem;
+            line-height: 1.6;
+            color: #E6E6E6;
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 40px;
+            font-weight: 300;
+        }
+        
+        .slide li:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 14px;
+            width: 6px;
+            height: 6px;
+            background: #007AFF;
+            border-radius: 50%;
+        }
+        
+        .evolution-path {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+        
+        .path-step {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            min-width: 200px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .path-step:hover {
+            background: rgba(0,122,255,0.1);
+            border-color: #007AFF;
+            transform: translateY(-5px);
+        }
+        
+        .path-step h4 {
+            font-size: 1.3rem;
+            color: #007AFF;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .path-step p {
+            font-size: 1.1rem;
+            color: #B3B3B3;
+            margin: 0;
+        }
+        
+        .path-arrow {
+            font-size: 2.5rem;
+            color: #007AFF;
+            opacity: 0.7;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 60px auto;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(to right, #007AFF, #34C759);
+            z-index: -1;
+        }
+        
+        .timeline-item {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #007AFF;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 140px;
+            position: relative;
+        }
+        
+        .timeline-item.future {
+            border-color: #34C759;
+        }
+        
+        .timeline-item h4 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .timeline-item p {
+            font-size: 0.9rem;
+            color: #B3B3B3;
+            margin: 0;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #fff;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 400;
+        }
+        
+        .btn:hover {
+            background: rgba(0,122,255,0.2);
+            border-color: #007AFF;
+            transform: translateY(-2px);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #B3B3B3;
+            backdrop-filter: blur(10px);
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #007AFF, #34C759);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 500;
+        }
+        
+        .big-number {
+            font-size: 8rem;
+            font-weight: 100;
+            color: #007AFF;
+            opacity: 0.3;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .evolution-path { flex-direction: column; gap: 20px; }
+            .timeline { flex-direction: column; gap: 20px; }
+            .timeline:before { display: none; }
+            .controls { bottom: 20px; }
+            .slide-counter { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">9</span>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Manual Testing Strategy</h1>
+            <p style="font-size: 2rem; margin-top: 40px;">Building the foundation for <span class="highlight">UI automation</span></p>
+            <p style="font-size: 1.2rem; margin-top: 30px; color: #666;">From human insight to automated confidence</p>
+        </div>
+        
+        <!-- Slide 2: Current State -->
+        <div class="slide">
+            <div class="big-number">01</div>
+            <h2>Where We Are Today</h2>
+            <ul>
+                <li>Manual testing across all user flows</li>
+                <li>Human validation of UI/UX behavior</li>
+                <li>Exploratory testing for edge cases</li>
+                <li>Cross-browser and device validation</li>
+                <li>User acceptance testing</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 3: Manual Testing Process -->
+        <div class="slide">
+            <h2>Manual Testing Process</h2>
+            <div class="evolution-path">
+                <div class="path-step">
+                    <h4>Test Planning</h4>
+                    <p>Define scenarios & acceptance criteria</p>
+                </div>
+                <div class="path-arrow">→</div>
+                <div class="path-step">
+                    <h4>Execute Tests</h4>
+                    <p>Manual validation across environments</p>
+                </div>
+                <div class="path-arrow">→</div>
+                <div class="path-step">
+                    <h4>Document Results</h4>
+                    <p>Track issues & create test evidence</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Daily Deployment Challenges -->
+        <div class="slide">
+            <div class="big-number">02</div>
+            <h2>Daily Deployment Challenges</h2>
+            <ul>
+                <li>Time constraints for thorough testing</li>
+                <li>Regression testing bottlenecks</li>
+                <li>Human error and fatigue</li>
+                <li>Inconsistent test execution</li>
+                <li>Limited coverage with time pressure</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 5: Evolution Path -->
+        <div class="slide">
+            <h2>The <span class="highlight">Evolution Path</span></h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Phase 1</h4>
+                    <p>Manual Testing Foundation</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Phase 2</h4>
+                    <p>Test Case Documentation</p>
+                </div>
+                <div class="timeline-item future">
+                    <h4>Phase 3</h4>
+                    <p>Identify Automation Candidates</p>
+                </div>
+                <div class="timeline-item future">
+                    <h4>Phase 4</h4>
+                    <p>UI Automation Framework</p>
+                </div>
+                <div class="timeline-item future">
+                    <h4>Phase 5</h4>
+                    <p>Full CI/CD Integration</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Preparing for Automation -->
+        <div class="slide">
+            <div class="big-number">03</div>
+            <h2>Preparing for Automation</h2>
+            <ul>
+                <li>Document repetitive test scenarios</li>
+                <li>Identify stable UI elements</li>
+                <li>Create data-driven test cases</li>
+                <li>Establish naming conventions</li>
+                <li>Build reusable test components</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 7: Automation Candidates -->
+        <div class="slide">
+            <h2>Best Automation Candidates</h2>
+            <h3>From manual testing insights</h3>
+            <ul>
+                <li>Login and authentication flows</li>
+                <li>Form submissions and validations</li>
+                <li>Navigation and routing tests</li>
+                <li>API response validations</li>
+                <li>Regression test suites</li>
+                <li>Cross-browser compatibility checks</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 8: UI Automation Framework -->
+        <div class="slide">
+            <div class="big-number">04</div>
+            <h2>UI Automation Framework</h2>
+            <div class="evolution-path">
+                <div class="path-step">
+                    <h4>Cypress/Playwright</h4>
+                    <p>Modern testing frameworks</p>
+                </div>
+                <div class="path-arrow">→</div>
+                <div class="path-step">
+                    <h4>Page Objects</h4>
+                    <p>Maintainable test structure</p>
+                </div>
+                <div class="path-arrow">→</div>
+                <div class="path-step">
+                    <h4>CI/CD Pipeline</h4>
+                    <p>Automated execution</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Success Metrics -->
+        <div class="slide">
+            <h2>Success Metrics</h2>
+            <h3>Measuring the transition</h3>
+            <ul>
+                <li><span class="highlight">Test Coverage:</span> 80% automated critical paths</li>
+                <li><span class="highlight">Execution Time:</span> Reduce from hours to minutes</li>
+                <li><span class="highlight">Reliability:</span> 95%+ consistent test results</li>
+                <li><span class="highlight">Deployment Frequency:</span> Enable true daily deployments</li>
+                <li><span class="highlight">Manual Testing:</span> Focus on exploratory & new features</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="previousSlide()">← Previous</button>
+            <button class="btn" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'Escape') {
+                // Full screen toggle simulation
+                document.body.classList.toggle('fullscreen');
+            }
+        });
+        
+        // Touch/swipe support for mobile
+        let startX = 0;
+        document.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    previousSlide();
+                }
+            }
+        });
+        
+        // Auto-advance slides (optional - remove if not needed)
+        // setInterval(() => {
+        //     nextSlide();
+        // }, 30000); // 30 seconds per slide
+    </script>
+</body>
+</html>
